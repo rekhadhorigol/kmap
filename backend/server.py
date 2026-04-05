@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -1253,8 +1253,47 @@ def minimize_kmap(request: MinimizeRequest):
 async def root():
     return {"message": "K-Map Minimizer API"}
 
+import httpx
 
-# Include the router in the main app
+@api_router.post("/chat")
+async def chat_proxy(request: Request):
+    body = await request.json()
+    messages = body.get("messages", [])
+    system = body.get("system", "")
+    max_tokens = body.get("max_tokens", 1000)
+
+    gemini_messages = []
+    for msg in messages:
+        role = "user" if msg["role"] == "user" else "model"
+        gemini_messages.append({
+            "role": role,
+            "parts": [{"text": msg["content"]}]
+        })
+
+    gemini_body = {
+        "system_instruction": {"parts": [{"text": system}]},
+        "contents": gemini_messages,
+        "generationConfig": {"maxOutputTokens": max_tokens}
+    }
+
+    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}",
+            json=gemini_body,
+            timeout=30,
+        )
+        if response.status_code != 200:
+            logging.error(f"Gemini API error: {response.status_code} - {response.text}")
+            raise HTTPException(500, "AI API error")
+        
+        gemini_response = response.json()
+        text = gemini_response["candidates"][0]["content"]["parts"][0]["text"]
+        return {
+            "content": [{"type": "text", "text": text}]
+        }
+
+# Include the router AFTER all routes are defined
 app.include_router(api_router)
 
 app.add_middleware(
@@ -1272,7 +1311,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
