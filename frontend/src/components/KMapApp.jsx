@@ -47,13 +47,18 @@ export default function KMapApp() {
         dont_cares: dontCares,
         expression: inputMode === "expression" ? expression : null,
         variable_names: varNames,
+<<<<<<< HEAD
       }, { timeout: 30000 });
+=======
+      });
+>>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 
       setResults(response.data);
       setActiveTab("kmap");
       toast.success("K-Map minimized successfully!");
     } catch (error) {
       console.error("Minimization error:", error);
+<<<<<<< HEAD
       if (error.code === "ECONNABORTED") {
         toast.error("Request timed out. Please try again.");
       } else if (error.code === "ERR_NETWORK" || !error.response) {
@@ -61,6 +66,9 @@ export default function KMapApp() {
       } else {
         toast.error(error.response?.data?.detail || "Minimization failed");
       }
+=======
+      toast.error(error.response?.data?.detail || "Minimization failed");
+>>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     } finally {
       setLoading(false);
     }
@@ -182,8 +190,13 @@ export default function KMapApp() {
               <KMapVisualization
                 numVars={numVars}
                 varNames={varNames}
+<<<<<<< HEAD
                 minterms={results.truth_table.filter(r => r[results.output_name || "F"] === 1).map(r => r.minterm)}
                 dontCares={results.truth_table.filter(r => r[results.output_name || "F"] === 'X').map(r => r.minterm)}
+=======
+                minterms={results.truth_table.filter(r => r.F === 1).map(r => r.minterm)}
+                dontCares={results.truth_table.filter(r => r.F === 'X').map(r => r.minterm)}
+>>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
                 groups={results.groups}
               />
             )}
@@ -201,7 +214,11 @@ export default function KMapApp() {
 
           <TabsContent value="verilog">
             {results && (
+<<<<<<< HEAD
               <VerilogPanel results={results} varNames={varNames} numVars={numVars} outputName={results.output_name || "F"} />
+=======
+              <VerilogPanel results={results} varNames={varNames} numVars={numVars} />
+>>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             )}
           </TabsContent>
         </Tabs>

@@ -16,7 +16,11 @@ with open("server.py", "r") as f:
 import re as _re
 from itertools import combinations, product
 
+<<<<<<< HEAD
 exec_globals = {"re": _re, "combinations": combinations, "product": product, "time": time}
+=======
+exec_globals = {"re": _re, "combinations": combinations, "product": product}
+>>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 exec_locals = {}
 
 # Execute just the algorithm classes
