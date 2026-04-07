@@ -7,20 +7,14 @@ import LogicDiagram from "./LogicDiagram";
 
 
 export default function ResultsPanel({ results, varNames, numVars }) {
-<<<<<<< HEAD
   const outName = results.output_name || "F";
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
   return (
     <div className="space-y-6">
 
       {/* Expression Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-<<<<<<< HEAD
 
-=======
         
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         {/* SOP */}
         <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl shadow-lg p-6 border-2 border-emerald-300">
           <div className="flex items-center gap-3 mb-4">
@@ -33,21 +27,15 @@ export default function ResultsPanel({ results, varNames, numVars }) {
             <div className="bg-white rounded-lg p-4 border border-emerald-200">
               <p className="text-xs font-semibold text-slate-600 mb-1">Canonical Form:</p>
               <p className="text-lg font-bold font-mono" data-testid="canonical-sop">
-<<<<<<< HEAD
                 {outName} = {results.canonical_sop}
-=======
                 F = {results.canonical_sop}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
               </p>
             </div>
             <div className="bg-white rounded-lg p-4 border border-emerald-200">
               <p className="text-xs font-semibold text-slate-600 mb-1">Minimal Form:</p>
               <p className="text-xl font-bold text-emerald-700 font-mono" data-testid="minimal-sop">
-<<<<<<< HEAD
                 {outName} = {results.minimal_sop}
-=======
                 F = {results.minimal_sop}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
               </p>
             </div>
           </div>
@@ -65,21 +53,15 @@ export default function ResultsPanel({ results, varNames, numVars }) {
             <div className="bg-white rounded-lg p-4 border border-blue-200">
               <p className="text-xs font-semibold text-slate-600 mb-1">Canonical Form:</p>
               <p className="text-lg font-bold font-mono" data-testid="canonical-pos">
-<<<<<<< HEAD
                 {outName} = {results.canonical_pos}
-=======
                 F = {results.canonical_pos}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
               </p>
             </div>
             <div className="bg-white rounded-lg p-4 border border-blue-200">
               <p className="text-xs font-semibold text-slate-600 mb-1">Minimal Form:</p>
               <p className="text-xl font-bold text-blue-700 font-mono" data-testid="minimal-pos">
-<<<<<<< HEAD
                 {outName} = {results.minimal_pos}
-=======
                 F = {results.minimal_pos}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
               </p>
             </div>
           </div>
@@ -144,11 +126,8 @@ export default function ResultsPanel({ results, varNames, numVars }) {
                     {varNames.slice(0, numVars).map((name) => (
                       <th key={name} className="px-4 py-2 text-left font-semibold">{name}</th>
                     ))}
-<<<<<<< HEAD
                     <th className="px-4 py-2 text-left font-semibold">{outName}</th>
-=======
                     <th className="px-4 py-2 text-left font-semibold">F</th>
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
                     <th className="px-4 py-2 text-left font-semibold">Minterm</th>
                   </tr>
                 </thead>
@@ -159,11 +138,8 @@ export default function ResultsPanel({ results, varNames, numVars }) {
                         <td key={name} className="px-4 py-2 font-mono">{row[name]}</td>
                       ))}
                       <td className="px-4 py-2 font-bold font-mono">
-<<<<<<< HEAD
                         {row[outName]}
-=======
                         {row.F}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
                       </td>
                       <td className="px-4 py-2 font-mono">{row.minterm}</td>
                     </tr>
@@ -224,11 +200,8 @@ export default function ResultsPanel({ results, varNames, numVars }) {
         <TabsContent value="logic-diagram">
           <Card className="bg-white rounded-xl shadow-md p-6">
             <h3 className="text-xl font-semibold text-slate-800 mb-4">
-<<<<<<< HEAD
               Logic Diagram (from Minimal SOP)
-=======
                Logic Diagram (from Minimal SOP)
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             </h3>
 
             {/* Remove "F =" before passing */}

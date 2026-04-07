@@ -83,9 +83,7 @@ def run_single_test(test_id, description, num_vars, minterms, dont_cares, catego
     }
 
 
-# ============================================================
 # DEFINE 50 TEST CASES
-# ============================================================
 TEST_CASES = []
 
 # --- Category 1: Small / Classic (3-4 vars) ---
@@ -208,9 +206,7 @@ random.seed(77)
 TEST_CASES.append(("15-var 750 + 50 DC", 15, sorted(random.sample(range(32768), 750)), sorted(random.sample(list(set(range(32768)) - set(random.sample(range(32768), 750))), 50)), "15-var Don't-Care"))
 
 
-# ============================================================
 # RUN ALL TESTS
-# ============================================================
 def main():
     print("=" * 120)
     print("K-MAP MINIMIZER COMPREHENSIVE BENCHMARK - 50 TEST CASES")
@@ -248,9 +244,7 @@ def main():
                 "uncovered_count": -1, "extra_count": -1,
             })
 
-    # ============================================================
     # PRINT RESULTS TABLE
-    # ============================================================
     print()
     print("=" * 170)
     print(f"{'#':>3} | {'Description':35s} | {'Cat':18s} | {'Vars':>4} | {'Mints':>6} | {'DCs':>4} | {'Space':>7} | {'PIs':>5} | {'Ess.':>4} | {'Sel.':>4} | {'Time(ms)':>10} | {'Status':>6} | Minimal Expression")
@@ -261,9 +255,7 @@ def main():
         expr_display = r["minimal_expression"][:50] + ("..." if len(r["minimal_expression"]) > 50 else "")
         print(f"{r['id']:3d} | {r['description']:35s} | {r['category']:18s} | {r['num_vars']:4d} | {r['total_minterms']:6d} | {r['total_dont_cares']:4d} | {r['search_space']:7d} | {r['num_prime_implicants']:5d} | {r['num_essential_pis']:4d} | {r['num_selected_pis']:4d} | {r['time_ms']:10.4f} | {status:>6} | {expr_display}")
 
-    # ============================================================
     # SUMMARY STATISTICS
-    # ============================================================
     print()
     print("=" * 120)
     print("SUMMARY STATISTICS")

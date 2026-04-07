@@ -27,7 +27,6 @@ _output_name = exec_ns["_output_name"]
 
 errors = []
 
-# ========= TEST CASES =========
 test_cases = [
     {"name": "2var [1,3]", "nv": 2, "mints": [1, 3], "dcs": [], "vars": ["A", "B"]},
     {"name": "3var [0,2,5,7]", "nv": 3, "mints": [0, 2, 5, 7], "dcs": [], "vars": ["A", "B", "C"]},

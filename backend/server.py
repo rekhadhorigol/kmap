@@ -1,18 +1,12 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, APIRouter, HTTPException, Request
 from contextlib import asynccontextmanager
-=======
 from fastapi import FastAPI, APIRouter, HTTPException
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-<<<<<<< HEAD
 import httpx
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
@@ -25,7 +19,6 @@ import time
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-<<<<<<< HEAD
 # MongoDB connection (optional - not required for minimization)
 try:
     mongo_url = os.environ.get('MONGO_URL', '')
@@ -55,7 +48,6 @@ api_router = APIRouter(prefix="/api")
 class MinimizeRequest(BaseModel):
     num_vars: int = Field(..., ge=2, le=15)
     input_mode: str = Field(default="minterm")
-=======
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -72,7 +64,6 @@ api_router = APIRouter(prefix="/api")
 class MinimizeRequest(BaseModel):
     num_vars: int = Field(..., ge=2, le=15)  # Extended range to support up to 15 variables
     input_mode: str = Field(default="minterm")  # minterm, maxterm, or expression
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     minterms: List[int] = Field(default_factory=list)
     maxterms: List[int] = Field(default_factory=list)
     dont_cares: List[int] = Field(default_factory=list)
@@ -95,24 +86,20 @@ class MinimizeResponse(BaseModel):
     simulation_output: str
     waveform_data: Dict[str, Any]
     steps: List[str]
-<<<<<<< HEAD
     performance_metrics: Dict[str, Any] = Field(default_factory=dict)
     output_name: str = "F"
 
 
 # ─── Boolean Expression Parser ────────────────────────────────────────────────
 
-=======
     performance_metrics: Dict[str, Any] = Field(default_factory=dict)  # New field for performance data
 
 
 # Boolean Expression Parser
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 class BooleanExpressionParser:
     def __init__(self, expression, var_names):
         self.expression = expression.upper().strip()
         self.var_names = [v.upper() for v in var_names]
-<<<<<<< HEAD
 
     def parse_to_minterms(self, num_vars):
         expr = self.expression
@@ -141,7 +128,6 @@ class BooleanExpressionParser:
             while re.search(r'(\d)\s*(\d)', eval_expr):
                 eval_expr = re.sub(r'(\d)\s*(\d)', r'\1 and \2', eval_expr)
             return bool(eval(eval_expr))
-=======
         
     def parse_to_minterms(self, num_vars):
         """Parse boolean expression and return minterms"""
@@ -196,16 +182,13 @@ class BooleanExpressionParser:
             # Evaluate
             result = eval(eval_expr)
             return bool(result)
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         except:
             return False
 
 
-<<<<<<< HEAD
 # ─── Optimized Bit-Slice Quine-McCluskey ──────────────────────────────────────
 
 class BitSliceQuineMcCluskey:
-=======
 # Optimized Bit-Slice Quine-McCluskey Implementation
 class BitSliceQuineMcCluskey:
     """
@@ -219,14 +202,12 @@ class BitSliceQuineMcCluskey:
     5. Memory-efficient implicant storage
     """
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     def __init__(self, num_vars, minterms, dont_cares=[]):
         self.num_vars = num_vars
         self.minterms = sorted(set(minterms))
         self.dont_cares = sorted(set(dont_cares))
         self.all_terms = sorted(set(minterms + dont_cares))
         self.steps = []
-<<<<<<< HEAD
         self.mask_full = (1 << num_vars) - 1
         self.term_to_idx = {term: i for i, term in enumerate(self.all_terms)}
         self.idx_to_term = list(self.all_terms)
@@ -247,7 +228,6 @@ class BitSliceQuineMcCluskey:
         return False, 0, 0
 
     def implicant_to_binary(self, value, mask):
-=======
         self.mask_full = (1 << num_vars) - 1  # All bits set for num_vars
 
     @staticmethod
@@ -280,7 +260,6 @@ class BitSliceQuineMcCluskey:
 
     def implicant_to_binary(self, value, mask):
         """Convert bitset representation to binary string with '-' for don't-cares"""
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         result = []
         for i in range(self.num_vars - 1, -1, -1):
             if mask & (1 << i):
@@ -292,10 +271,8 @@ class BitSliceQuineMcCluskey:
         return ''.join(result)
 
     def get_minterms_from_implicant(self, value, mask):
-<<<<<<< HEAD
         dc_positions = [i for i in range(self.num_vars) if mask & (1 << i)]
         minterms = []
-=======
         """Extract all minterms covered by an implicant"""
         dc_positions = []
         for i in range(self.num_vars):
@@ -304,21 +281,18 @@ class BitSliceQuineMcCluskey:
 
         minterms = []
         # Generate all combinations of don't-care positions
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         for combo in range(1 << len(dc_positions)):
             minterm = value
             for idx, pos in enumerate(dc_positions):
                 if combo & (1 << idx):
                     minterm |= (1 << pos)
             minterms.append(minterm)
-<<<<<<< HEAD
         return sorted(minterms)
 
     def find_prime_implicants(self):
         if not self.all_terms:
             return []
 
-=======
 
         return sorted(minterms)
 
@@ -333,17 +307,13 @@ class BitSliceQuineMcCluskey:
 
         # Initialize: track minterms as integer bitmasks for O(1) union
         # bit i set means minterm i is covered
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         current_level = {}
         for term in self.all_terms:
             ones = self.popcount(term)
             if ones not in current_level:
                 current_level[ones] = []
-<<<<<<< HEAD
             current_level[ones].append((term, 0, 1 << self.term_to_idx[term]))
-=======
             current_level[ones].append((term, 0, 1 << term))  # bitmask instead of frozenset
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 
         self.steps.append(f"Initial grouping by popcount: {len(current_level)} groups")
 
@@ -353,7 +323,6 @@ class BitSliceQuineMcCluskey:
         iteration = 0
         while current_level:
             iteration += 1
-<<<<<<< HEAD
             if self._is_over_budget():
                 self.steps.append("Time budget reached; returning current prime implicants")
                 for key in current_level:
@@ -382,7 +351,6 @@ class BitSliceQuineMcCluskey:
                             current_used.add((value2, mask2))
                             new_mints = mints1 | mints2
                             sig = (new_value, new_mask)
-=======
             next_level_map = {}  # (value, mask) -> minterm_bitmask
             current_used = set()
 
@@ -404,16 +372,12 @@ class BitSliceQuineMcCluskey:
                             new_mints = mints1 | mints2  # O(1) bitwise OR
                             sig = (new_value, new_mask)
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
                             if sig in next_level_map:
                                 next_level_map[sig] |= new_mints
                             else:
                                 next_level_map[sig] = new_mints
 
-<<<<<<< HEAD
-=======
             # Collect unused terms as prime implicants
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             for key in current_level:
                 for value, mask, mints in current_level[key]:
                     sig = (value, mask)
@@ -421,14 +385,11 @@ class BitSliceQuineMcCluskey:
                         prime_implicants.append((value, mask, mints))
                         all_used.add(sig)
 
-<<<<<<< HEAD
             if budget_exceeded:
                 self.steps.append("Time budget reached mid-iteration; returning current prime implicants")
                 break
 
-=======
             # Rebuild grouped level
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             next_level = {}
             for (value, mask), mints in next_level_map.items():
                 ones = self.popcount(value & ~mask)
@@ -446,23 +407,19 @@ class BitSliceQuineMcCluskey:
 
     @staticmethod
     def _bitmask_to_list(bitmask):
-<<<<<<< HEAD
         result = []
         n = bitmask
         while n:
             bit = n & (-n)
-=======
         """Convert an integer bitmask to a sorted list of set bit positions."""
         result = []
         n = bitmask
         while n:
             bit = n & (-n)         # isolate lowest set bit
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             result.append(bit.bit_length() - 1)
             n ^= bit
         return result
 
-<<<<<<< HEAD
     def _is_over_budget(self):
         return time.perf_counter() - self._time_start > self._time_budget
 
@@ -504,7 +461,6 @@ class BitSliceQuineMcCluskey:
                 if term in coverage:
                     coverage[term].append(i)
 
-=======
     def find_minimal_cover_advanced(self, prime_implicants):
         """
         Advanced column covering using branch-and-bound with pruning.
@@ -523,7 +479,6 @@ class BitSliceQuineMcCluskey:
                     coverage[mint].append(i)
 
         # Find essential prime implicants
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         essential = set()
         for mint, covering_pis in coverage.items():
             if len(covering_pis) == 1:
@@ -532,19 +487,16 @@ class BitSliceQuineMcCluskey:
         essential_pis = [prime_implicants[i] for i in essential]
         self.steps.append(f"Identified {len(essential_pis)} essential prime implicants")
 
-<<<<<<< HEAD
         minterm_bitmask = 0
         for m in self.minterms:
             minterm_bitmask |= (1 << self.term_to_idx[m])
 
-=======
         # Build bitmask of all minterms to cover
         minterm_bitmask = 0
         for m in self.minterms:
             minterm_bitmask |= (1 << m)
 
         # Remove minterms covered by essentials
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         covered_bitmask = 0
         for value, mask, mints_bm in essential_pis:
             covered_bitmask |= (mints_bm & minterm_bitmask)
@@ -556,10 +508,7 @@ class BitSliceQuineMcCluskey:
 
         uncovered_count = self.popcount(uncovered_bitmask)
 
-<<<<<<< HEAD
-=======
         # Get remaining PIs that cover uncovered minterms
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         remaining_pis = []
         for i, (value, mask, mints_bm) in enumerate(prime_implicants):
             if i not in essential:
@@ -567,7 +516,6 @@ class BitSliceQuineMcCluskey:
                 if cover_bm:
                     remaining_pis.append((i, value, mask, mints_bm, cover_bm))
 
-<<<<<<< HEAD
         remaining_pis.sort(key=lambda pi: self.popcount(pi[4]), reverse=True)
 
         if len(remaining_pis) > 30 or uncovered_count > 20 or self._is_over_budget():
@@ -586,7 +534,6 @@ class BitSliceQuineMcCluskey:
                 return
             if len(selected) >= best_size:
                 return
-=======
         # Sort by coverage count (most covering first) for better pruning
         remaining_pis.sort(key=lambda pi: self.popcount(pi[4]), reverse=True)
 
@@ -614,20 +561,17 @@ class BitSliceQuineMcCluskey:
             if len(selected) >= best_size:
                 return
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             if uncov_bm == 0:
                 if len(selected) < best_size:
                     best_size = len(selected)
                     best_solution = selected.copy()
                 return
-<<<<<<< HEAD
             if index >= len(remaining):
                 return
             max_coverage = max(
                 (self.popcount(pi[4] & uncov_bm) for pi in remaining[index:]), default=0)
             if max_coverage == 0:
                 return
-=======
 
             if index >= len(remaining):
                 return
@@ -640,15 +584,11 @@ class BitSliceQuineMcCluskey:
             if max_coverage == 0:
                 return
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             uncov_count = self.popcount(uncov_bm)
             lower_bound = len(selected) + (uncov_count + max_coverage - 1) // max_coverage
             if lower_bound >= best_size:
                 return
-<<<<<<< HEAD
-=======
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             idx, value, mask, mints_bm, cover_bm = remaining[index]
             new_uncov = uncov_bm & ~cover_bm
             selected.append((value, mask, mints_bm))
@@ -663,7 +603,6 @@ class BitSliceQuineMcCluskey:
             self.steps.append(f"Found optimal cover with {len(final_selected)} prime implicants")
             return essential_pis, final_selected
 
-<<<<<<< HEAD
         self.steps.append("Branch-and-bound node limit reached; using greedy fallback")
         return essential_pis, self._greedy_cover(essential_pis, remaining_pis, uncovered_bitmask)
 
@@ -671,7 +610,6 @@ class BitSliceQuineMcCluskey:
         if isinstance(value_or_str, str):
             term = value_or_str
             vn = mask_or_varnames
-=======
         return essential_pis, essential_pis
 
     def term_to_expression(self, value_or_str, mask_or_varnames=None, var_names=None):
@@ -685,7 +623,6 @@ class BitSliceQuineMcCluskey:
             # Compatibility mode: binary string like "10-1"
             term = value_or_str
             vn = mask_or_varnames  # second arg is var_names
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             expr = []
             for i, bit in enumerate(term):
                 if bit == '1':
@@ -694,20 +631,14 @@ class BitSliceQuineMcCluskey:
                     expr.append(vn[i] + "'")
             return ''.join(expr) if expr else '1'
         else:
-<<<<<<< HEAD
-=======
             # Bitwise mode: integer value and mask
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             value = value_or_str
             mask = mask_or_varnames
             vn = var_names
             expr = []
             for i in range(self.num_vars - 1, -1, -1):
-<<<<<<< HEAD
                 if not (mask & (1 << i)):
-=======
                 if not (mask & (1 << i)):  # Not a don't-care
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
                     if value & (1 << i):
                         expr.append(vn[self.num_vars - 1 - i])
                     else:
@@ -715,10 +646,7 @@ class BitSliceQuineMcCluskey:
             return ''.join(expr) if expr else '1'
 
     def minimize(self, var_names):
-<<<<<<< HEAD
-=======
         """Main minimization orchestration"""
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         prime_implicants = self.find_prime_implicants()
         essential_pis, selected_pis = self.find_minimal_cover_advanced(prime_implicants)
 
@@ -731,7 +659,6 @@ class BitSliceQuineMcCluskey:
         ]
         expression = ' + '.join(expression_terms)
 
-<<<<<<< HEAD
         pi_list_compat = []
         for value, mask, mints_bm in prime_implicants:
             binary_str = self.implicant_to_binary(value, mask)
@@ -744,7 +671,6 @@ class BitSliceQuineMcCluskey:
         ]
         selected_compat = [
             (self.implicant_to_binary(v, m), sorted(self.bitmask_to_terms(mints_bm)))
-=======
         # Convert bitmask minterms to sorted lists for compatibility
         max_term = 1 << self.num_vars
         pi_list_compat = []
@@ -759,14 +685,12 @@ class BitSliceQuineMcCluskey:
         ]
         selected_compat = [
             (self.implicant_to_binary(v, m), [x for x in self._bitmask_to_list(mints_bm) if x < max_term])
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             for v, m, mints_bm in selected_pis
         ]
 
         return expression, pi_list_compat, essential_compat, selected_compat
 
 
-<<<<<<< HEAD
 class QuineMcCluskey(BitSliceQuineMcCluskey):
     pass
 
@@ -855,7 +779,6 @@ def generate_minimal_pos(maxterms, num_vars, var_names, dont_cares=[]):
         binary_str = qm.implicant_to_binary(value, mask)
         term_parts = []
         for i, bit in enumerate(binary_str):
-=======
 # Legacy wrapper for backward compatibility
 class QuineMcCluskey(BitSliceQuineMcCluskey):
     """Backward-compatible wrapper - delegates to optimized implementation"""
@@ -914,14 +837,12 @@ def generate_minimal_pos(maxterms, num_vars, var_names, dont_cares=[]):
     for term, _ in selected_compat:
         term_parts = []
         for i, bit in enumerate(term):
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             if bit == '0':
                 term_parts.append(var_names[i])
             elif bit == '1':
                 term_parts.append(var_names[i] + "'")
         if term_parts:
             expression_terms.append('(' + ' + '.join(term_parts) + ')')
-<<<<<<< HEAD
     return ''.join(expression_terms) if expression_terms else "1"
 
 
@@ -967,7 +888,6 @@ def generate_waveform_data(truth_table, num_vars, var_names, out_name):
         "signals": signals,
         "time_steps": cap,
         "signal_names": var_names[:num_vars] + [out_name]
-=======
 
     return ''.join(expression_terms) if expression_terms else "1"
 
@@ -1012,25 +932,19 @@ def generate_waveform_data(truth_table, num_vars, var_names):
         "signals": signals,
         "time_steps": len(truth_table),
         "signal_names": var_names[:num_vars] + ['F']
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     }
 
 
 def sop_to_verilog(expression, num_vars, var_names):
-<<<<<<< HEAD
-=======
     """Convert SOP expression like AB' + C'D to valid Verilog: (A & ~B) | (~C & D)"""
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     if expression == "0":
         return "1'b0"
     if expression == "1":
         return "1'b1"
-<<<<<<< HEAD
     vars_list = var_names[:num_vars]
     sorted_vars = sorted(vars_list, key=len, reverse=True)
     terms = expression.split(" + ")
     verilog_terms = []
-=======
 
     vars_list = var_names[:num_vars]
     sorted_vars = sorted(vars_list, key=len, reverse=True)
@@ -1038,7 +952,6 @@ def sop_to_verilog(expression, num_vars, var_names):
     terms = expression.split(" + ")
     verilog_terms = []
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     for term in terms:
         literals = []
         i = 0
@@ -1056,17 +969,13 @@ def sop_to_verilog(expression, num_vars, var_names):
                     break
             if not matched:
                 i += 1
-<<<<<<< HEAD
-=======
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         if not literals:
             verilog_terms.append("1'b1")
         elif len(literals) == 1:
             verilog_terms.append(literals[0])
         else:
             verilog_terms.append(f"({' & '.join(literals)})")
-<<<<<<< HEAD
     return " | ".join(verilog_terms)
 
 
@@ -1084,7 +993,6 @@ def generate_verilog_behavioral(expression, num_vars, var_names, out_name='F'):
 
 always @(*) begin
     {out_name} = {formatted_expr};
-=======
 
     return " | ".join(verilog_terms)
 
@@ -1137,12 +1045,10 @@ endmodule"""
 
 always @(*) begin
     F = {formatted_expr};
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 end
 
 endmodule"""
 
-<<<<<<< HEAD
 
 def generate_verilog_dataflow(expression, num_vars, var_names, out_name='F'):
     verilog_expr = sop_to_verilog(expression, num_vars, var_names)
@@ -1163,7 +1069,6 @@ endmodule"""
 
 def generate_verilog_gate_level(selected_pis, num_vars, var_names, out_name='F'):
     inputs = ', '.join(var_names[:num_vars])
-=======
     return code
 
 
@@ -1225,46 +1130,35 @@ def generate_verilog_gate_level(selected_pis, num_vars, var_names):
     """
     inputs = ', '.join(var_names[:num_vars])
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     wires = []
     gates = []
     not_wires = []
 
-<<<<<<< HEAD
-=======
     # Generate NOT gates for inverted inputs
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     for i, var in enumerate(var_names[:num_vars]):
         not_wires.append(f"{var}_n")
         gates.append(f"    not n{i}({var}_n, {var});")
 
-<<<<<<< HEAD
     for idx, (term, mints) in enumerate(selected_pis):
         wire_name = f"term{idx}"
         wires.append(wire_name)
-=======
     # Generate AND gates for each product term
     for idx, (term, mints) in enumerate(selected_pis):
         wire_name = f"term{idx}"
         wires.append(wire_name)
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         and_inputs = []
         for i, bit in enumerate(term):
             if bit == '1':
                 and_inputs.append(var_names[i])
             elif bit == '0':
                 and_inputs.append(f"{var_names[i]}_n")
-<<<<<<< HEAD
-=======
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         if len(and_inputs) == 0:
             gates.append(f"    assign {wire_name} = 1'b1;")
         elif len(and_inputs) == 1:
             gates.append(f"    assign {wire_name} = {and_inputs[0]};")
         else:
-<<<<<<< HEAD
             gates.append(f"    and a{idx}({wire_name}, {', '.join(and_inputs)});")
 
     if len(wires) == 0:
@@ -1280,7 +1174,6 @@ def generate_verilog_gate_level(selected_pis, num_vars, var_names):
     return f"""module kmap_gate_level(
     input {inputs},
     output {out_name}
-=======
             # Handle large AND gates (>8 inputs) with hierarchical structure
             if len(and_inputs) > 8:
                 temp_wires = []
@@ -1363,7 +1256,6 @@ endmodule"""
         code = f"""module kmap_gate_level(
     input {inputs},
     output F
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 );
 
 {not_wire_decl}
@@ -1374,7 +1266,6 @@ endmodule"""
 
 endmodule"""
 
-<<<<<<< HEAD
 
 def generate_verilog_testbench(num_vars, var_names, truth_table, out_name='F'):
     inputs = ', '.join(var_names[:num_vars])
@@ -1394,7 +1285,6 @@ def generate_verilog_testbench(num_vars, var_names, truth_table, out_name='F'):
         {', '.join([f'.{v}({v})' for v in var_names[:num_vars]])},
         .{out_name}({out_name})
     );
-=======
     return code
 
 
@@ -1451,7 +1341,6 @@ def generate_verilog_testbench(num_vars, var_names, truth_table):
     {truncate_note}
     // Instantiate the design under test
     {dut_inst}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 
     integer i;
     reg [{num_vars}:0] test_vectors [0:{len(test_table)-1}];
@@ -1460,14 +1349,12 @@ def generate_verilog_testbench(num_vars, var_names, truth_table):
         $dumpfile(\"kmap.vcd\");
         $dumpvars(0, kmap_tb);
 
-<<<<<<< HEAD
 {test_init}
 
         for (i = 0; i < {len(test_table)}; i = i + 1) begin
             {{{', '.join(var_names[:num_vars])}}} = test_vectors[i][{num_vars}:1];
             #10;
         end
-=======
         // Initialize test vectors
 {test_init}
 
@@ -1479,12 +1366,10 @@ def generate_verilog_testbench(num_vars, var_names, truth_table):
                 {', '.join(var_names[:num_vars])}, F, test_vectors[i][0]);
         end
 
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         $finish;
     end
 endmodule"""
 
-<<<<<<< HEAD
 
 def generate_simulation_output(truth_table, num_vars, var_names, out_name='F'):
     lines = ["VVP Simulation Output:", "=" * 50,
@@ -1511,7 +1396,6 @@ def generate_kmap_groups(selected_pis, num_vars):
 
 @api_router.post("/minimize", response_model=MinimizeResponse)
 def minimize_kmap(request: MinimizeRequest):
-=======
     return code
 
 
@@ -1548,26 +1432,21 @@ def generate_kmap_groups(selected_pis, num_vars):
 
 @api_router.post("/minimize", response_model=MinimizeResponse)
 async def minimize_kmap(request: MinimizeRequest):
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     try:
         start_time = time.perf_counter()
         timings = {}
 
-<<<<<<< HEAD
         t0 = time.perf_counter()
         if request.input_mode == "expression":
-=======
         # Process based on input mode
         t0 = time.perf_counter()
         if request.input_mode == "expression":
             # Parse Boolean expression
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             parser = BooleanExpressionParser(request.expression, request.variable_names)
             minterms = parser.parse_to_minterms(request.num_vars)
             all_terms = set(range(2 ** request.num_vars))
             maxterms = list(all_terms - set(minterms) - set(request.dont_cares))
         elif request.input_mode == "maxterm":
-<<<<<<< HEAD
             all_terms = set(range(2 ** request.num_vars))
             minterms = list(all_terms - set(request.maxterms) - set(request.dont_cares))
             maxterms = request.maxterms
@@ -1577,7 +1456,6 @@ async def minimize_kmap(request: MinimizeRequest):
             maxterms = list(all_terms - set(minterms) - set(request.dont_cares))
         timings['input_processing'] = (time.perf_counter() - t0) * 1000
 
-=======
             # Convert maxterms to minterms
             all_terms = set(range(2 ** request.num_vars))
             minterms = list(all_terms - set(request.maxterms) - set(request.dont_cares))
@@ -1589,14 +1467,12 @@ async def minimize_kmap(request: MinimizeRequest):
         timings['input_processing'] = (time.perf_counter() - t0) * 1000  # ms
 
         # Validate inputs
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         max_val = 2 ** request.num_vars
         if any(m >= max_val for m in minterms + maxterms + request.dont_cares):
             raise HTTPException(400, "Term values exceed variable range")
 
         var_names = request.variable_names[:request.num_vars]
 
-<<<<<<< HEAD
         if len(minterms) >= max_val:
             truth_table, out_name, total_rows = generate_truth_table(
                 request.num_vars, minterms, request.dont_cares, var_names)
@@ -1639,7 +1515,6 @@ async def minimize_kmap(request: MinimizeRequest):
         truth_table, out_name, total_rows = generate_truth_table(
             request.num_vars, minterms, request.dont_cares, var_names)
         timings['truth_table_generation'] = (time.perf_counter() - t0) * 1000
-=======
         # Run Quine-McCluskey for SOP
         t0 = time.perf_counter()
         qm = QuineMcCluskey(request.num_vars, minterms, request.dont_cares)
@@ -1661,7 +1536,6 @@ async def minimize_kmap(request: MinimizeRequest):
         t0 = time.perf_counter()
         truth_table = generate_truth_table(request.num_vars, minterms, request.dont_cares, var_names)
         timings['truth_table_generation'] = (time.perf_counter() - t0) * 1000  # ms
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 
         pi_list = [{
             "term": pi[0],
@@ -1671,7 +1545,6 @@ async def minimize_kmap(request: MinimizeRequest):
         } for pi in prime_implicants]
 
         essential_pi_exprs = [qm.term_to_expression(pi[0], var_names) for pi in essential_pis]
-<<<<<<< HEAD
         groups = generate_kmap_groups(selected_pis, request.num_vars)
 
         t0 = time.perf_counter()
@@ -1684,7 +1557,6 @@ async def minimize_kmap(request: MinimizeRequest):
         simulation_output = generate_simulation_output(truth_table, request.num_vars, var_names, out_name)
         waveform_data = generate_waveform_data(truth_table, request.num_vars, var_names, out_name)
         total_time = (time.perf_counter() - start_time) * 1000
-=======
 
         groups = generate_kmap_groups(selected_pis, request.num_vars)
 
@@ -1727,9 +1599,7 @@ async def minimize_kmap(request: MinimizeRequest):
         logger.info("Stage-wise timings (ms):")
         for stage, t in performance_metrics["timings"].items():
             logger.info(f"  {stage:<25} : {t}")
-        logger.info("===================================")
         
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 
         return MinimizeResponse(
             truth_table=truth_table,
@@ -1747,7 +1617,6 @@ async def minimize_kmap(request: MinimizeRequest):
             simulation_output=simulation_output,
             waveform_data=waveform_data,
             steps=qm.steps,
-<<<<<<< HEAD
             performance_metrics={
                 "total_time_ms": round(total_time, 2),
                 "timings": {k: round(v, 2) for k, v in timings.items()},
@@ -1761,9 +1630,7 @@ async def minimize_kmap(request: MinimizeRequest):
                 "optimization_level": "High (bitwise operations, advanced column covering)"
             },
             output_name=out_name
-=======
             performance_metrics=performance_metrics
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         )
 
     except Exception as e:
@@ -1776,7 +1643,6 @@ async def root():
     return {"message": "K-Map Minimizer API"}
 
 
-<<<<<<< HEAD
 # ─── Chat endpoint (Anthropic) ────────────────────────────────────────────────
 
 @api_router.post("/chat")
@@ -1837,9 +1703,7 @@ async def chat_proxy(request: Request):
 
 # ─── App setup ────────────────────────────────────────────────────────────────
 
-=======
 # Include the router in the main app
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 app.include_router(api_router)
 
 app.add_middleware(
@@ -1850,22 +1714,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-<<<<<<< HEAD
-=======
 # Configure logging
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-<<<<<<< HEAD
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-=======
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be

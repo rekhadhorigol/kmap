@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # K-Map Solver
 
 This project is a web-based Karnaugh Map (K-Map) solver designed to assist students and engineers in digital logic design. It provides a user-friendly interface to minimize boolean functions and generate corresponding logic representations.
@@ -74,7 +73,6 @@ npm start
 ```
 
 The application will be available at `http://localhost:3000`.
-=======
 # K-Map Solver Web Application
 
 A full-stack web application that simplifies Boolean expressions using Karnaugh Maps (K-Maps). This project provides an interactive interface for users to input variables and visualize simplified logic expressions efficiently.
@@ -183,4 +181,3 @@ REACT_APP_BACKEND_URL=https://kmap-backend-7jz4.onrender.com
 Feel free to connect or give feedback!
 
 If you like this project, consider giving it a star!
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be

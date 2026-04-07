@@ -1,16 +1,12 @@
 import React from "react";
 import { Card } from "../components/ui/card";
 
-<<<<<<< HEAD
 function getGrayCode(num) {
-=======
 function getGrayCode(num, bits) {
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
   return num ^ (num >> 1);
 }
 
 function getKMapLayout(numVars) {
-<<<<<<< HEAD
   // Split variables: first half -> rows, second half -> columns
   // Standard K-Map convention:
   //   2 vars: 1 row bit, 1 col bit  (2x2)
@@ -28,7 +24,6 @@ function getKMapLayout(numVars) {
     rowBits,
     colBits,
   };
-=======
   if (numVars === 2) {
     return {
       rows: 2,
@@ -51,12 +46,10 @@ function getKMapLayout(numVars) {
       colBits: 2,
     };
   }
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 }
 
 function getCellValue(row, col, numVars) {
   const layout = getKMapLayout(numVars);
-<<<<<<< HEAD
   const rowGray = getGrayCode(row);
   const colGray = getGrayCode(col);
   return (rowGray << layout.colBits) | colGray;
@@ -82,7 +75,6 @@ function getRowVarLabel(numVars, varNames) {
 function getColVarLabel(numVars, varNames) {
   const layout = getKMapLayout(numVars);
   return varNames.slice(layout.rowBits, layout.rowBits + layout.colBits).join("");
-=======
   const rowGray = getGrayCode(row, layout.rowBits);
   const colGray = getGrayCode(col, layout.colBits);
   
@@ -110,7 +102,6 @@ function getColLabel(col, numVars, varNames) {
   const bits = numVars === 2 ? 1 : 2;
   const gray = getGrayCode(col, bits);
   return gray.toString(2).padStart(bits, '0');
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 }
 
 export default function KMapVisualization({
@@ -120,7 +111,6 @@ export default function KMapVisualization({
   dontCares,
   groups,
 }) {
-<<<<<<< HEAD
   // K-Map grid visualization is practical for up to 8 variables (16x16 = 256 cells)
   if (numVars > 8) {
     return (
@@ -183,11 +173,9 @@ export default function KMapVisualization({
   const mintermSet = new Set(minterms);
   const dontCareSet = new Set(dontCares);
 
-=======
   const layout = getKMapLayout(numVars);
   const cellSize = numVars === 2 ? 80 : numVars === 3 ? 70 : 60;
   
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
   const getCellColor = (cellValue) => {
     for (const group of groups) {
       if (group.cells.includes(cellValue)) {
@@ -198,13 +186,10 @@ export default function KMapVisualization({
   };
 
   const getCellContent = (cellValue) => {
-<<<<<<< HEAD
     if (mintermSet.has(cellValue)) return "1";
     if (dontCareSet.has(cellValue)) return "X";
-=======
     if (minterms.includes(cellValue)) return "1";
     if (dontCares.includes(cellValue)) return "X";
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     return "0";
   };
 
@@ -232,7 +217,6 @@ export default function KMapVisualization({
       {/* K-Map Grid */}
       <div className="overflow-x-auto">
         <div className="inline-block">
-<<<<<<< HEAD
           {/* Column variable label + column headers */}
           <div className="flex mb-1">
             {/* Corner: row\col variable names */}
@@ -245,34 +229,28 @@ export default function KMapVisualization({
                 {" \\ "}
                 <span className="text-emerald-600">{getColVarLabel(numVars, varNames)}</span>
               </span>
-=======
           {/* Column Headers */}
           <div className="flex mb-2">
             <div style={{ width: cellSize }} className="flex items-center justify-center font-semibold text-slate-700">
               {numVars === 2 ? varNames[1] : numVars === 3 ? `${varNames[1]}${varNames[2]}` : `${varNames[2]}${varNames[3]}`}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             </div>
             {Array.from({ length: layout.cols }).map((_, col) => (
               <div
                 key={col}
-<<<<<<< HEAD
                 style={{ width: cellSize, minWidth: cellSize }}
                 className={`flex items-center justify-center font-semibold text-emerald-700 ${headerFontSize}`}
               >
                 {getColLabel(col, numVars)}
-=======
                 style={{ width: cellSize }}
                 className="flex items-center justify-center font-semibold text-slate-700"
               >
                 {getColLabel(col, numVars, varNames)}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
               </div>
             ))}
           </div>
 
           {/* Rows */}
           {Array.from({ length: layout.rows }).map((_, row) => (
-<<<<<<< HEAD
             <div key={row} className="flex">
               {/* Row Header */}
               <div
@@ -280,7 +258,6 @@ export default function KMapVisualization({
                 className={`flex items-center justify-end pr-2 font-semibold text-blue-700 ${headerFontSize}`}
               >
                 {getRowLabel(row, numVars)}
-=======
             <div key={row} className="flex mb-2">
               {/* Row Header */}
               <div
@@ -288,7 +265,6 @@ export default function KMapVisualization({
                 className="flex items-center justify-center font-semibold text-slate-700"
               >
                 {getRowLabel(row, numVars, varNames)}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
               </div>
 
               {/* Cells */}
@@ -300,7 +276,6 @@ export default function KMapVisualization({
                 return (
                   <div
                     key={col}
-<<<<<<< HEAD
                     className={`kmap-cell flex items-center justify-center border border-slate-300 font-bold ${fontSize}`}
                     style={{
                       width: cellSize,
@@ -310,7 +285,6 @@ export default function KMapVisualization({
                       borderColor: cellColor !== "transparent" ? cellColor : "#cbd5e1",
                     }}
                     title={`m${cellValue}`}
-=======
                     className="kmap-cell flex items-center justify-center border-2 border-slate-300 font-bold text-lg rounded-lg"
                     style={{
                       width: cellSize,
@@ -318,7 +292,6 @@ export default function KMapVisualization({
                       backgroundColor: cellColor,
                       borderColor: cellColor !== "transparent" ? cellColor : "#cbd5e1",
                     }}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
                     data-testid={`kmap-cell-${cellValue}`}
                   >
                     {content}
@@ -327,14 +300,11 @@ export default function KMapVisualization({
               })}
             </div>
           ))}
-<<<<<<< HEAD
-=======
 
           {/* Row Label */}
           <div className="mt-3 text-center font-semibold text-slate-700">
             {numVars === 2 ? varNames[0] : numVars === 3 ? varNames[0] : `${varNames[0]}${varNames[1]}`}
           </div>
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         </div>
       </div>
 
@@ -343,10 +313,7 @@ export default function KMapVisualization({
         <p className="text-sm text-slate-700">
           <strong>Note:</strong> K-Map uses Gray code ordering. Adjacent cells differ by exactly one variable.
           Grouped cells represent prime implicants in the minimized expression.
-<<<<<<< HEAD
           {numVars > 4 && " Hover over cells to see minterm numbers."}
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
         </p>
       </div>
     </Card>

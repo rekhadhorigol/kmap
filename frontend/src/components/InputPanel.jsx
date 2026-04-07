@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
-=======
 import React from "react";
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
@@ -30,7 +27,6 @@ export default function InputPanel({
   onMinimize,
   loading,
 }) {
-<<<<<<< HEAD
   // Raw text states for controlled inputs
   const [mintermText, setMintermText] = useState(minterms.join(", "));
   const [maxtermText, setMaxtermText] = useState(maxterms.join(", "));
@@ -47,8 +43,6 @@ export default function InputPanel({
     if (dontCares.length === 0) setDontCareText("");
   }, [dontCares]);
 
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
   const parseNumbers = (value, maxValue) => {
     const nums = value
       .split(",")
@@ -60,28 +54,19 @@ export default function InputPanel({
   };
 
   const handleMintermChange = (e) => {
-<<<<<<< HEAD
     setMintermText(e.target.value);
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     const nums = parseNumbers(e.target.value, 2 ** numVars);
     setMinterms(nums);
   };
 
   const handleMaxtermChange = (e) => {
-<<<<<<< HEAD
     setMaxtermText(e.target.value);
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     const nums = parseNumbers(e.target.value, 2 ** numVars);
     setMaxterms(nums);
   };
 
   const handleDontCareChange = (e) => {
-<<<<<<< HEAD
     setDontCareText(e.target.value);
-=======
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
     const nums = parseNumbers(e.target.value, 2 ** numVars);
     setDontCares(nums);
   };
@@ -193,11 +178,8 @@ export default function InputPanel({
           <Input
             type="text"
             placeholder="e.g., 0, 2, 5, 7"
-<<<<<<< HEAD
             value={mintermText}
-=======
             defaultValue={minterms.join(", ")}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             onChange={handleMintermChange}
             className="input-field border-emerald-300 focus:border-emerald-500"
           />
@@ -211,11 +193,8 @@ export default function InputPanel({
           <Input
             type="text"
             placeholder="e.g., 1, 3, 4, 6"
-<<<<<<< HEAD
             value={maxtermText}
-=======
             defaultValue={maxterms.join(", ")}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             onChange={handleMaxtermChange}
             className="input-field border-emerald-300 focus:border-emerald-500"
           />
@@ -229,11 +208,8 @@ export default function InputPanel({
           <Input
             type="text"
             placeholder="e.g., 1, 4"
-<<<<<<< HEAD
             value={dontCareText}
-=======
             defaultValue={dontCares.join(", ")}
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
             onChange={handleDontCareChange}
             className="input-field border-emerald-300 focus:border-emerald-500"
           />

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useRef } from "react";
 import { Stage, Layer, Line, Circle, Text, Rect } from "react-konva";
 
@@ -323,7 +322,6 @@ export default function LogicDiagram({ sop }) {
     </div>
   );
 }
-=======
 import React, { useRef } from "react";
 import { Stage, Layer, Line, Circle, Text, Rect } from "react-konva";
 
@@ -610,4 +608,3 @@ export default function LogicDiagram({ sop }) {
     </div>
   );
 }
->>>>>>> b10543bcef5f9a0b909ed57727a8156690ff67be
